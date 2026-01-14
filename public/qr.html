@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR SCANNER</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         body {
             margin: 0;
@@ -31,9 +33,42 @@
             width: 22rem;
             text-align: center;
             background-color: #000;
-            padding: 1rem;
+            padding: 1.2rem;
             border-radius: 14px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,.6);
         }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            background: #111;
+        }
+
+        p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="content">
+        <h2>Scan QR Code</h2>
+
+        <!-- QR IMAGE -->
+        <img src="/server/qr" alt="QR Code">
+
+        <p>Open WhatsApp → Linked Devices → Scan QR</p>
+    </div>
+</body>
+</html>
 
         #QR-content img {
             border-radius: 10px;
@@ -68,7 +103,7 @@
         <div id="QR-content">
             <img id="qr-image" src="/server" alt="QR CODE">
         </div>
-        <h2 id="main">MALVIN QR PAIR</h2>
+        <h2 id="main">SLIME QR PAIR</h2>
         <p id="legend">Scan The QR Code</p>
         <progress value="0" max="30" id="progressBar"></progress>
         <a href="javascript:history.go(0)" class="reload-button">Reload Page</a>
