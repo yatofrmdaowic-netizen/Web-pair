@@ -1,0 +1,18 @@
+{
+  "name": "slime-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp Web QR + Pairing Bot",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^5.0.2",
+    "axios": "^1.5.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "qrcode": "^1.5.1",
+    "pino": "^8.13.1"
+  }
+}
