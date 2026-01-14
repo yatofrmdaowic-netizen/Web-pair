@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR SCANNER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(-45deg, #4a90e2, #3ac569, #9b59b6, #e74c3c);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            width: 22rem;
+            text-align: center;
+            background-color: #000;
+            padding: 1rem;
+            border-radius: 14px;
+        }
+
+        #QR-content img {
+            border-radius: 10px;
+            width: 20rem;
+        }
+
+        h2, p {
+            color: #fff;
+        }
+
+        progress {
+            width: 100%;
+            height: 10px;
+            margin-top: 10px;
+        }
+
+        .reload-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .reload-button:hover { background-color: #2980b9; }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <div id="QR-content">
+            <img id="qr-image" src="/server" alt="QR CODE">
+        </div>
+        <h2 id="main">MALVIN QR PAIR</h2>
+        <p id="legend">Scan The QR Code</p>
+        <progress value="0" max="30" id="progressBar"></progress>
+        <a href="javascript:history.go(0)" class="reload-button">Reload Page</a>
+    </div>
+
+    <script>
+        let timeleft = 30;
+        let timer = setInterval(() => {
+            if(timeleft <= 0){
+                clearInterval(timer);
+                document.getElementById("main").innerText = "QR Expired! Please reload";
+                document.getElementById("legend").innerText = "";
+            }
+            document.getElementById("progressBar").value = 30 - timeleft;
+            timeleft -= 1;
+        }, 1000);
+    </script>
+</body>
+</html>
