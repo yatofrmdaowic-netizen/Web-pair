@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MALVIN SESSION</title>
+<style>
+body { background:black; display:flex; justify-content:center; align-items:center; height:100vh; color:white; font-family: Arial,sans-serif; }
+.button-container { display:flex; flex-direction:column; align-items:center; }
+.button { width:160px; height:42px; margin:8px 0; display:flex; align-items:center; justify-content:center; background:linear-gradient(0deg,#000,#272727); border-radius:10px; color:white; font-weight:900; text-decoration:none; position:relative; cursor:pointer; }
+.button:before,.button:after{ content:''; position:absolute; left:-2px; top:-2px; border-radius:10px; background:linear-gradient(45deg,#48ff00,#15ff00,#000000,#ff0000); background-size:400%; width:calc(100%+4px); height:calc(100%+4px); z-index:-1; animation:steam 10s linear infinite; }
+.button:after { filter: blur(40px); }
+@keyframes steam {0%{background-position:0 0;}50%{background-position:400% 0;}100%{background-position:0 0;}}
+footer { position:fixed; bottom:0; width:100%; background:#222; color:#fff; padding:10px 0; text-align:center; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="button-container">
+<h3>MALVIN SESSION</h3>
+<a href="/qr" class="button" target="_blank">QR-CODE</a>
+<a href="/pair" class="button" target="_blank">PAIRING-CODE</a>
+<a href="https://github.com/XdKing2/MALVIN-XD/fork" class="button" target="_blank">FORK MALVIN XD</a>
+<a href="https://whatsapp.com/channel/0029VbA6MSYJUM2TVOzCSb2A" class="button" target="_blank">WHATSAPP</a>
+<p>HAVE ANY ERROR CLICK ERROR BUTTON</p>
+<a href="https://wa.me/263780166288" class="button" target="_blank">ERROR</a>
+</div>
+<footer>MALVIN &copy; <span id="year"></span></footer>
+<script>document.getElementById("year").textContent=new Date().getFullYear();</script>
+</body>
+</html>
