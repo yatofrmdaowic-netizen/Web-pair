@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MALVIN PAIR CODE</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-image: url("https://i.ibb.co/pXL9RYv/temp-image.jpg");
+      background-size: cover;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .box {
+      width: 300px;
+      height: auto;
+      padding: 20px;
+      text-align: center;
+      background-color: rgba(255,255,255,0.6);
+      border-radius: 10px;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 0.3rem;
+      margin-top: 15px;
+    }
+
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 8px 0 0 8px;
+      border: none;
+      outline: none;
+    }
+
+    .input-container button {
+      padding: 10px;
+      border: none;
+      border-radius: 0 8px 8px 0;
+      cursor: pointer;
+      background: linear-gradient(135deg, #8a2be2, #800080);
+      color: white;
+      font-weight: bold;
+    }
+
+    .input-container button:hover {
+      background: linear-gradient(135deg, #32cd32, #a8e4a0);
+      color: red;
+    }
+
+    #pair {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="box">
+      <h2>MALVIN PAIR</h2>
+      <h6>Enter your number with country code</h6>
+      <div class="input-container">
+        <input id="number" type="number" placeholder="2637147XXX">
+        <button id="submit">Enter</button>
+      </div>
+      <div id="pair"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const input = document.getElementById("number");
+    const submit = document.getElementById("submit");
+    const pairDiv = document.getElementById("pair");
+
+    submit.addEventListener("click", async () => {
+      const number = input.value.replace(/\D/g, "");
+      if(number.length < 10){
+        pairDiv.innerHTML = "❌ Invalid number!";
+        return;
+      }
+
+      pairDiv.innerHTML = "⏳ Please wait...";
+      try {
+        const { data } = await axios(`/code?number=${number}`);
+        if(data.status){
+          pairDiv.innerHTML = `✅ Your Pairing Code: <strong>${data.pairing_code}</strong>`;
+        } else {
+          pairDiv.innerHTML = "❌ Service unavailable!";
+        }
+      } catch(err){
+        pairDiv.innerHTML = "❌ Error connecting to server!";
+      }
+    });
+  </script>
+</body>
+</html>
