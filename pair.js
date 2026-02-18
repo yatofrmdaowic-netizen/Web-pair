@@ -1,8 +1,9 @@
 const express = require("express");
-const { 
-    default: makeWASocket, 
-    useMultiFileAuthState, 
-    fetchLatestBaileysVersion 
+const {
+  default: makeWASocket,
+  useMultiFileAuthState,
+  fetchLatestBaileysVersion,
+  DisconnectReason
 } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const path = require("path");
@@ -10,52 +11,83 @@ const path = require("path");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    const number = req.query.number;
-    if (!number) {
-        return res.json({ status: false, message: "Number required with country code" });
-    }
+  const number = (req.query.number || "").toString().replace(/\D/g, "");
+  if (!number) {
+    return res.json({ status: false, message: "Number required with country code" });
+  }
 
-    try {
-        // Use ONE fixed auth folder
-        const authPath = path.join(process.cwd(), "auth");
+  let responseSent = false;
+  let sock;
 
-        const { state, saveCreds } = await useMultiFileAuthState(authPath);
-        const { version } = await fetchLatestBaileysVersion();
+  const sendOnce = (payload) => {
+    if (responseSent) return;
+    responseSent = true;
+    res.json(payload);
+  };
 
-        const sock = makeWASocket({
-            version,
-            auth: state,
-            logger: pino({ level: "silent" }),
-            browser: ["Slime Bot", "Chrome", "1.0.0"]
-        });
+  try {
+    // Keep auth isolated per number so stale creds do not block new linking requests.
+    const authPath = path.join(process.cwd(), "auth", number);
 
-        sock.ev.on("creds.update", saveCreds);
+    const { state, saveCreds } = await useMultiFileAuthState(authPath);
+    const { version } = await fetchLatestBaileysVersion();
 
-        // Wait before requesting pairing code
-        setTimeout(async () => {
-            try {
-                const cleanNumber = number.replace(/\D/g, "");
-                const code = await sock.requestPairingCode(cleanNumber);
+    sock = makeWASocket({
+      version,
+      auth: state,
+      logger: pino({ level: "silent" }),
+      browser: ["Slime Bot", "Chrome", "1.0.0"],
+      printQRInTerminal: false,
+      markOnlineOnConnect: false
+    });
 
-                res.json({
-                    status: true,
-                    pairing_code: code
-                });
+    sock.ev.on("creds.update", saveCreds);
 
-            } catch (err) {
-                res.json({
-                    status: false,
-                    error: err.message
-                });
-            }
-        }, 5000);
+    let pairingRequested = false;
 
-    } catch (err) {
-        res.json({
+    sock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
+      if (connection === "close") {
+        const statusCode = lastDisconnect?.error?.output?.statusCode;
+        if (!responseSent && statusCode !== DisconnectReason.loggedOut) {
+          sendOnce({
+            status: false,
+            error: "Connection closed before pairing. Please try again."
+          });
+        }
+      }
+
+      if ((connection === "connecting" || connection === "open") && !pairingRequested && !sock.authState.creds.registered) {
+        pairingRequested = true;
+        try {
+          const code = await sock.requestPairingCode(number);
+          sendOnce({
+            status: true,
+            pairing_code: code
+          });
+        } catch (err) {
+          sendOnce({
             status: false,
             error: err.message
+          });
+        }
+      }
+    });
+
+    // Fallback so request does not hang indefinitely.
+    setTimeout(() => {
+      if (!responseSent) {
+        sendOnce({
+          status: false,
+          error: "Timed out while creating pairing code."
         });
-    }
+      }
+    }, 20000);
+  } catch (err) {
+    sendOnce({
+      status: false,
+      error: err.message
+    });
+  }
 });
 
 module.exports = router;
