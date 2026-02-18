@@ -17,6 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/server", require("./qr"));
 app.use("/code", require("./pair"));
 
+// Static assets
+app.use(express.static(path.join(__path, "public")));
+
 // Serve HTML
 app.get("/qr", (req, res) => res.sendFile(path.join(__path, "public/qr.html")));
 app.get("/pair", (req, res) => res.sendFile(path.join(__path, "public/pair.html")));
